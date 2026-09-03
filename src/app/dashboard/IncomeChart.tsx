@@ -22,7 +22,7 @@ export default function IncomeChart({
         <XAxis dataKey="month" tick={{ fontSize: 12 }} stroke="#9ca3af" />
         <YAxis tick={{ fontSize: 12 }} stroke="#9ca3af" />
         <Tooltip
-          formatter={(value: number) => [`$${value.toFixed(2)}`, "Income"]}
+          formatter={(value: number | string) => [`$${value.toFixed(2)}`, "Income"]}
         />
         <Line
           type="monotone"
