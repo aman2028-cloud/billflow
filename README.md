@@ -7,9 +7,9 @@ BillFlow is a simple invoicing app for freelancers. You can sign up, add clients
 ## Demo login
 
 Use this account to log in and see everything already set up (a client and one invoice):
-
+- **Name:** demo
 - **Email:** demo@billflow.com
-- **Password:** (put the password you used here)
+- **Password:** 12345678
 
 There is already one invoice created for this account. Open it from the Invoices page and click "Copy share link" to see the public invoice page a client would see.
 
