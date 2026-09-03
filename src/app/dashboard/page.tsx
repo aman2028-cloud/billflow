@@ -1,7 +1,6 @@
 import { db } from "@/db";
-import { invoices, clients, lineItems } from "@/db/schema";
+import { invoices, clients, lineItems, settings } from "@/db/schema";
 import { auth } from "@/auth";
-// import { eq } from "drizzle-orm";
 import Link from "next/link";
 import { effectiveStatus, calculateTotals } from "@/lib/invoice-utils";
 import IncomeChart from "./IncomeChart";
@@ -21,13 +20,19 @@ export default async function DashboardPage() {
     .from(clients)
     .where(eq(clients.userId, userId));
 
+  const [userSettings] = await db
+    .select()
+    .from(settings)
+    .where(eq(settings.userId, userId))
+    .limit(1);
+
   const clientMap = new Map(allClients.map((c) => [c.id, c.name]));
 
   // Fetch all line items for all invoices in one go, group by invoiceId
   const invoiceIds = allInvoices.map((i) => i.id);
-const allLineItems = invoiceIds.length
-  ? await db.select().from(lineItems).where(inArray(lineItems.invoiceId, invoiceIds))
-  : [];
+  const allLineItems = invoiceIds.length
+    ? await db.select().from(lineItems).where(inArray(lineItems.invoiceId, invoiceIds))
+    : [];
   const itemsByInvoice = new Map<string, typeof allLineItems>();
   for (const item of allLineItems) {
     if (!itemsByInvoice.has(item.invoiceId)) itemsByInvoice.set(item.invoiceId, []);
@@ -91,8 +96,9 @@ const allLineItems = invoiceIds.length
     overdue: "bg-red-100 text-red-700",
   };
 
+  const currency = userSettings?.currency || "USD";
   const fmt = (n: number) =>
-    new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
+    new Intl.NumberFormat("en-US", { style: "currency", currency }).format(n);
 
   return (
     <div className="p-8">
